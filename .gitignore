@@ -1,0 +1,5 @@
+outputs/
+work/
+*_guardado_*/
+*.tmp
+*.log
