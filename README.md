@@ -28,8 +28,8 @@ No usa logo `BD` ni texto de barrio privado.
 
 ### Seguridad
 
-- Usuario: `Seguridad`
-- Contrasena: `Seguridad`
+- Usuario: `seg`
+- Contrasena: `seg`
 - Acceso: sistema de garita completo.
 
 ### Residentes

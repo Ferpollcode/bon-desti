@@ -75,20 +75,6 @@
   .btn-primary:hover { background: var(--accent-text); }
   .btn-danger { background: var(--danger-bg); color: var(--danger); border-color: #f7c1c1; }
   .btn-sm { padding: 5px 10px; font-size: 12px; }
-  .siren-logo {
-    background: url("assets/sirena-emergencia.png") center / contain no-repeat;
-    display: block;
-    flex: 0 0 auto;
-    height: 1.35em;
-    margin: 0 auto;
-    vertical-align: -0.2em;
-    width: 1.45em;
-  }
-  .siren-logo::before,
-  .siren-logo::after,
-  .siren-logo span,
-  .siren-logo span::before,
-  .siren-logo span::after { display: none; }
   .pass-days { display: flex; flex-wrap: wrap; gap: 8px; }
   .pass-days label { display: inline-flex; align-items: center; gap: 5px; padding: 7px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface2); font-size: 12px; }
   .pass-qr-card { display: grid; grid-template-columns: 220px 1fr; gap: 16px; align-items: start; margin-top: 12px; }
@@ -257,9 +243,9 @@
     min-height: 52px;
     width: 100%;
   }
-  .emergency-button .siren-logo { color: #fff; font-size: 46px; }
+  .emergency-button i { color: #fff; font-size: 46px; }
   .emergency-button strong { font-size: 20px; letter-spacing: 0; }
-  .emergency-button > span:not(.siren-logo) { color: rgba(255,255,255,.86); font-size: 13px; }
+  .emergency-button > span { color: rgba(255,255,255,.86); font-size: 13px; }
   .emergency-panel {
     background: linear-gradient(135deg, rgba(225, 29, 72, .22), rgba(249, 115, 22, .17));
     border: 1px solid rgba(255, 127, 127, .45);
@@ -429,7 +415,8 @@
     gap: 10px;
     justify-content: flex-start;
     min-height: 48px;
-    padding: 10px 12px;
+    padding: 10px 44px 10px 12px;
+    position: relative;
     text-align: left;
     width: 100%;
   }
@@ -449,8 +436,25 @@
     color: #ffedd5;
   }
   .login-role-btn.active {
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12), 0 16px 34px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22), 0 0 0 6px rgba(118, 247, 194, 0.20), 0 16px 34px rgba(0, 0, 0, 0.24);
     transform: translateY(-1px);
+  }
+  .login-role-btn.active::after {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 999px;
+    color: #0b1d33;
+    content: "✓";
+    display: inline-flex;
+    font-size: 15px;
+    font-weight: 950;
+    height: 26px;
+    justify-content: center;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px;
   }
   .login-role-btn[data-role="seguridad"].active { border-color: #93c5fd; color: #ffffff; }
   .login-role-btn[data-role="residentes"].active { border-color: #76f7c2; color: #ffffff; }
@@ -727,9 +731,37 @@
   .main-actions {
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     margin: 0 0 20px;
   }
+  .qr-scan-cta {
+    align-items: center;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    border: 1px solid rgba(255,255,255,0.26);
+    border-radius: 14px;
+    box-shadow: 0 18px 46px rgba(239,68,68,0.28);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    font-size: clamp(18px, 2.2vw, 28px);
+    font-weight: 950;
+    gap: 12px;
+    justify-content: center;
+    letter-spacing: 0;
+    margin: 0 0 16px;
+    min-height: 78px;
+    padding: 18px 20px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: .18s;
+    width: 100%;
+  }
+  .qr-scan-cta:hover {
+    box-shadow: 0 22px 56px rgba(239,68,68,0.34);
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+  }
+  .qr-scan-cta i { font-size: 36px; }
   .main-action {
     align-items: center;
     border: 1px solid var(--border);
@@ -761,13 +793,35 @@
     box-shadow: 0 18px 50px rgba(0,0,0,0.28);
     transform: translateY(-2px);
   }
-  .main-action i,
-  .main-action .siren-logo {
+  .main-action.selected {
+    border-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.22), 0 0 0 8px rgba(118, 247, 194, 0.20), 0 20px 54px rgba(0,0,0,0.34);
+    filter: brightness(1.12);
+    transform: translateY(-2px) scale(1.02);
+  }
+  .main-action.selected::before {
+    align-items: center;
+    background: rgba(255,255,255,0.92);
+    border-radius: 999px;
+    color: #0b1d33;
+    content: "✓";
+    display: inline-flex;
+    font-size: 18px;
+    font-weight: 950;
+    height: 32px;
+    justify-content: center;
+    left: 14px;
+    position: absolute;
+    top: 14px;
+    width: 32px;
+    z-index: 2;
+  }
+  .main-action i {
     font-size: 38px;
     position: relative;
     z-index: 1;
   }
-  .main-action > span:not(.siren-logo) {
+  .main-action > span {
     font-size: clamp(24px, 3vw, 36px);
     font-weight: 900;
     letter-spacing: 0;
@@ -776,11 +830,11 @@
   }
   .main-action.system { background: linear-gradient(135deg, #1d4ed8, var(--purple)); }
   .main-action.entry { background: linear-gradient(135deg, #008f5f, #00c781); }
-  .main-action.exit { background: linear-gradient(135deg, #e11d48, #ff8a1c); }
+  .main-action.exit,
+  button[onclick="abrirMovimiento('salida')"] { display: none !important; }
   .main-action.emergency { background: linear-gradient(135deg, #991b1b, #ef4444); }
-  .main-action.emergency i,
-  .main-action.emergency .siren-logo { font-size: 50px; }
-  .main-action.emergency > span:not(.siren-logo) { font-size: clamp(18px, 2vw, 24px); }
+  .main-action.emergency i { font-size: 50px; }
+  .main-action.emergency > span { font-size: clamp(18px, 2vw, 24px); }
   .ingreso-type-modal {
     max-width: 760px;
     width: min(760px, 94vw);
@@ -1276,11 +1330,10 @@
     min-height: 70px;
     text-align: center;
   }
-  .login-emergency-shortcut i,
-  .login-emergency-shortcut .siren-logo {
+  .login-emergency-shortcut i {
     font-size: 34px;
   }
-  .login-emergency-shortcut > span:not(.siren-logo) {
+  .login-emergency-shortcut > span {
     font-size: 17px;
     font-weight: 950;
     letter-spacing: 0;
@@ -1459,7 +1512,7 @@
     .owner-emergency-card .emergency-button {
       min-height: 148px;
     }
-    .emergency-button .siren-logo {
+    .emergency-button i {
       font-size: 42px;
     }
     .owner-visit-btn {
@@ -1502,7 +1555,7 @@
     .emergency-button strong {
       font-size: 20px;
     }
-    .emergency-button > span:not(.siren-logo) {
+    .emergency-button > span {
       line-height: 1.3;
     }
     .form-row,
@@ -1565,7 +1618,7 @@
         <strong>Bon Desti</strong>
         <span>Portal de habitantes</span>
       </div>
-      <button class="btn btn-sm" onclick="cerrarPortalPropietario()">Volver</button>
+      <button class="btn btn-sm" onclick="cerrarPortalPropietario()">Salir</button>
     </div>
 
     <div class="owner-card">
@@ -1580,7 +1633,7 @@
 
     <div class="owner-card owner-emergency-card">
       <button class="emergency-button" type="button" onclick="enviarEmergenciaPropietario()">
-        <span class="siren-logo" aria-hidden="true"><span></span></span>
+        <i class="ti ti-alert-triangle" aria-hidden="true"></i>
         <strong>EMERGENCIA</strong>
         <span>Avisa de inmediato a la garita de seguridad</span>
       </button>
@@ -1760,6 +1813,11 @@
         </div>
       </div>
 
+      <button class="qr-scan-cta" type="button" onclick="abrirEscaneoQrIngreso()">
+        <i class="ti ti-qrcode"></i>
+        <span>Escanear QR para verificar ingreso</span>
+      </button>
+
       <div class="main-actions">
         <button class="main-action system" type="button" onclick="abrirSistema()">
           <i class="ti ti-shield-lock"></i>
@@ -1769,14 +1827,15 @@
           <i class="ti ti-login-2"></i>
           <span>INGRESO</span>
         </button>
-        <button class="main-action exit" type="button" onclick="abrirMovimiento('salida')">
-          <i class="ti ti-logout-2"></i>
-          <span>SALIDA</span>
-        </button>
         <button class="main-action emergency" type="button" onclick="enviarEmergenciaGarita()">
-          <span class="siren-logo" aria-hidden="true"><span></span></span>
+          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
           <span>EMERGENCIA</span>
         </button>
+      </div>
+
+      <div class="card" id="principal-admin-buzon-card" hidden>
+        <div class="card-title">Buzón de mensajes de residentes</div>
+        <div id="principal-admin-buzon"></div>
       </div>
 
       <div class="system-overview" id="system-overview" hidden>
@@ -2208,6 +2267,10 @@
         </div>
         <div id="garita-whatsapp-status" class="page-sub"></div>
       </div>
+      <div class="card">
+        <div class="card-title">Mensajes de residentes para garita</div>
+        <div id="lista-buzon-garita-resumen"></div>
+      </div>
       <div class="tabs">
         <button class="tab active security-tab" onclick="showSecurityTab('guardias')">Personal</button>
         <button class="tab security-tab" onclick="showSecurityTab('turnos')">Turnos</button>
@@ -2357,11 +2420,11 @@
     </div>
     <div class="page-sub">Seleccione si ingresa una persona residente o una visita.</div>
     <div class="main-actions ingreso-type-actions">
-      <button class="main-action entry" type="button" onclick="seleccionarIngresoTipo('residente')">
+      <button class="main-action entry" type="button" onclick="seleccionarIngresoTipo('residente', this)">
         <i class="ti ti-home"></i>
         <span>RESIDENTE</span>
       </button>
-      <button class="main-action system" type="button" onclick="seleccionarIngresoTipo('visita')">
+      <button class="main-action system" type="button" onclick="seleccionarIngresoTipo('visita', this)">
         <i class="ti ti-user-plus"></i>
         <span>VISITA</span>
       </button>
@@ -2392,9 +2455,14 @@
         <label>Movimiento</label>
         <select id="acc-movimiento">
           <option value="entrada">Entrada</option>
-          <option value="salida">Salida</option>
         </select>
       </div>
+    </div>
+    <div class="form-group" id="grp-acc-residente">
+      <label>Seleccionar residente</label>
+      <select id="acc-residente" onchange="seleccionarResidenteAcceso()">
+        <option value="">-- Buscar en listado de habitantes --</option>
+      </select>
     </div>
     <div class="form-row">
       <div class="form-group" id="grp-acc-dni">
@@ -2873,11 +2941,11 @@
 // ===================== LOGIN =====================
 const LOGIN_ROLES = {
   seguridad: {
-    user: 'Seguridad',
-    pass: 'Seguridad',
+    user: 'seg',
+    pass: 'seg',
     title: 'Seguridad',
     copy: 'Ingreso para personal de garita.',
-    hint: 'Usuario: Seguridad | Contraseña: Seguridad',
+    hint: 'Ingreso para personal de garita.',
     page: 'principal'
   },
   residentes: {
@@ -2885,7 +2953,7 @@ const LOGIN_ROLES = {
     pass: 'resi',
     title: 'Residentes',
     copy: 'Portal para habitantes y residentes.',
-    hint: 'Usuario: resi | Contraseña: resi',
+    hint: 'Ingreso para habitantes y residentes.',
     page: 'owner'
   },
   administradora: {
@@ -2893,8 +2961,8 @@ const LOGIN_ROLES = {
     pass: 'admin',
     title: 'Administradora',
     copy: 'Ingreso para administración del consorcio.',
-    hint: 'Usuario: admin | Contraseña: admin',
-    page: 'dashboard'
+    hint: 'Ingreso para administración.',
+    page: 'principal'
   }
 };
 
@@ -3131,7 +3199,7 @@ function enviarMensajePropietario() {
   const loteId = document.getElementById('owner-lote')?.value || '';
   const lote = DB.get('lotes').find(l => l.id === loteId);
   if(!lote) { alert('Seleccione su casa antes de enviar un reclamo o sugerencia.'); return; }
-  const destino = document.getElementById('owner-buzon-destino')?.value || 'administracion';
+  const destino = normalizarDestinoMensaje(document.getElementById('owner-buzon-destino')?.value || 'administracion');
   const tipo = document.getElementById('owner-buzon-tipo')?.value || 'reclamo';
   const asunto = document.getElementById('owner-buzon-asunto')?.value.trim() || '';
   const mensaje = document.getElementById('owner-buzon-mensaje')?.value.trim() || '';
@@ -3162,8 +3230,9 @@ function enviarMensajePropietario() {
     status.innerHTML = `<strong>Mensaje enviado.</strong><br>Destino: ${destino === 'garita' ? 'Garita' : 'Administración'}.`;
   }
   renderMensajesPropietario();
+  renderBuzones();
   if(document.getElementById('page-seguridad')?.classList.contains('active')) renderSeguridad();
-  if(document.getElementById('page-consorcio')?.classList.contains('active')) renderConsorcio();
+  if(document.getElementById('page-consorcio')?.classList.contains('active') || document.getElementById('page-dashboard')?.classList.contains('active')) renderConsorcio();
 }
 
 function renderMensajesPropietario() {
@@ -3702,6 +3771,7 @@ function showPage(id) {
     if(n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
   if(id==='dashboard') renderDashboard();
+  if(id==='principal') renderPrincipal();
   if(id==='consorcio') renderConsorcio();
   if(id==='accesos') renderAccesos();
   if(id==='lotes') { renderLotes(); renderPropietariosResidentes(); renderPropietariosVehiculos(); renderAutorizados(); }
@@ -3757,14 +3827,35 @@ function abrirSistema() {
   if(!panel.hidden) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+function abrirEscaneoQrIngreso() {
+  showPage('seguridad');
+  showSecurityTab('pases');
+  const panel = document.getElementById('security-tab-pases');
+  if(panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  iniciarEscaneoPase();
+}
+
+function renderPrincipal() {
+  const isAdmin = localStorage.getItem('gd_auth_role') === 'administradora';
+  const card = document.getElementById('principal-admin-buzon-card');
+  if(card) card.hidden = !isAdmin;
+  if(isAdmin) renderBuzonDestino('administracion','principal-admin-buzon',10);
+}
+
 function abrirIngresoTipo() {
   limpiarAccesoForm();
   showModal('modal-ingreso-tipo');
 }
 
-function seleccionarIngresoTipo(tipo) {
-  closeModal('modal-ingreso-tipo');
-  abrirMovimiento('entrada', tipo);
+function seleccionarIngresoTipo(tipo, button) {
+  const modal = document.getElementById('modal-ingreso-tipo');
+  modal?.querySelectorAll('.main-action').forEach(btn => btn.classList.remove('selected'));
+  if(button) button.classList.add('selected');
+  setTimeout(() => {
+    if(button) button.classList.remove('selected');
+    closeModal('modal-ingreso-tipo');
+    abrirMovimiento('entrada', tipo);
+  }, 180);
 }
 
 function abrirMovimiento(movimiento, tipoPersona = '') {
@@ -3775,7 +3866,7 @@ function abrirMovimiento(movimiento, tipoPersona = '') {
   toggleAccesoFields();
   const title = document.querySelector('#modal-acceso .modal-title');
   if(title) title.textContent = movimiento === 'salida' ? 'Registrar salida' : `Registrar ingreso - ${tipoPersona === 'visita' ? 'Visita' : 'Residente'}`;
-  const firstField = tipoPersona === 'visita' ? document.getElementById('acc-dni') : document.getElementById('acc-nombre');
+  const firstField = tipoPersona === 'residente' ? document.getElementById('acc-residente') : (tipoPersona === 'visita' ? document.getElementById('acc-dni') : document.getElementById('acc-nombre'));
   if(firstField) firstField.focus();
 }
 
@@ -3787,6 +3878,7 @@ function nuevoAcceso() {
 // ===================== MODALS =====================
 function showModal(id) {
   populateLoteSelects();
+  if(id === 'modal-acceso') populateResidenteAccesoSelect();
   if(id === 'modal-acceso') {
     const title = document.querySelector('#modal-acceso .modal-title');
     if(title) title.textContent = 'Registrar acceso';
@@ -3824,10 +3916,35 @@ function populateLoteSelects() {
   });
 }
 
+function populateResidenteAccesoSelect() {
+  const select = document.getElementById('acc-residente');
+  if(!select) return;
+  const actual = select.value;
+  const residentes = DB.get('residentes');
+  const lotes = DB.get('lotes');
+  select.innerHTML = '<option value="">-- Buscar en listado de habitantes --</option>';
+  residentes
+    .slice()
+    .sort((a,b) => String(a.nombre || '').localeCompare(String(b.nombre || ''), 'es', {sensitivity:'base'}))
+    .forEach(r => {
+      const lote = lotes.find(l => l.id === r.loteId);
+      const opt = document.createElement('option');
+      opt.value = r.id;
+      opt.textContent = [
+        r.nombre || 'Sin nombre',
+        lote ? loteLabel(lote) : 'Sin casa',
+        r.dni ? 'DNI ' + r.dni : '',
+        r.acceso && r.acceso !== 'habilitado' ? r.acceso : ''
+      ].filter(Boolean).join(' | ');
+      select.appendChild(opt);
+    });
+  if(actual) select.value = actual;
+}
+
 // ===================== ACCESOS =====================
 function limpiarAccesoForm() {
   document.getElementById('acc-edit-id').value = '';
-  ['acc-dni','acc-nombre','acc-patente','acc-marca','acc-color','acc-obs'].forEach(i => {
+  ['acc-residente','acc-dni','acc-nombre','acc-patente','acc-marca','acc-color','acc-obs'].forEach(i => {
     const el = document.getElementById(i);
     if(el) el.value = '';
   });
@@ -3840,6 +3957,40 @@ function limpiarAccesoForm() {
   document.getElementById('acc-hora').value = '';
   const title = document.querySelector('#modal-acceso .modal-title');
   if(title) title.textContent = 'Registrar acceso';
+}
+
+function textoNormalizado(value) {
+  return String(value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function seleccionarResidenteAcceso() {
+  const residenteId = document.getElementById('acc-residente')?.value || '';
+  if(!residenteId) return;
+  const residente = DB.get('residentes').find(r => r.id === residenteId);
+  if(!residente) return;
+
+  document.getElementById('acc-tipo').value = 'residente';
+  document.getElementById('acc-nombre').value = residente.nombre || '';
+  document.getElementById('acc-dni').value = residente.dni || '';
+  document.getElementById('acc-lote').value = residente.loteId || '';
+
+  const vehiculos = DB.get('vehiculos').filter(v => v.loteId === residente.loteId);
+  const nombreResidente = textoNormalizado(residente.nombre);
+  const vehiculo = vehiculos.find(v => {
+    const titular = textoNormalizado(v.titular);
+    return titular && nombreResidente && (titular === nombreResidente || titular.includes(nombreResidente) || nombreResidente.includes(titular));
+  }) || (vehiculos.length === 1 ? vehiculos[0] : null);
+
+  if(vehiculo) {
+    document.getElementById('acc-modo-ingreso').value = vehiculo.tipo === 'moto' ? 'motocicleta' : 'vehiculo';
+    document.getElementById('acc-patente').value = vehiculo.patente || '';
+    document.getElementById('acc-marca').value = [vehiculo.marca, vehiculo.modelo].filter(Boolean).join(' ');
+    document.getElementById('acc-color').value = vehiculo.color || '';
+  }
+
+  toggleAccesoFields();
+  const status = document.getElementById('acc-dni-status');
+  if(status) status.textContent = residente.acceso && residente.acceso !== 'habilitado' ? 'Atención: residente sin habilitación.' : '';
 }
 
 function guardarAcceso() {
@@ -3941,16 +4092,19 @@ async function buscarPersonaPorDocumento() {
     return;
   }
 
-  if(status) status.textContent = 'No hay datos locales. Para consultar ARCA/Renaper se necesita un backend con acceso autorizado.';
+  if(status) status.textContent = '';
 }
 
 function editarAcceso(id) {
   const a = DB.get('accesos').find(x => x.id === id);
   if(!a) return;
   populateLoteSelects();
+  populateResidenteAccesoSelect();
   showModal('modal-acceso');
   document.getElementById('acc-edit-id').value = a.id;
   document.getElementById('acc-tipo').value = a.tipo || 'visita';
+  const residente = DB.get('residentes').find(r => normalizarDocumento(r.dni) === normalizarDocumento(a.dni) && r.nombre === a.nombre);
+  document.getElementById('acc-residente').value = residente?.id || '';
   document.getElementById('acc-movimiento').value = a.movimiento || 'entrada';
   document.getElementById('acc-dni').value = a.dni || '';
   document.getElementById('acc-nombre').value = a.nombre || '';
@@ -3964,6 +4118,40 @@ function editarAcceso(id) {
   const title = document.querySelector('#modal-acceso .modal-title');
   if(title) title.textContent = 'Editar acceso';
   toggleAccesoFields();
+}
+
+function vehiculoSigueAdentro(acceso, accesos) {
+  if(!acceso || !acceso.patente || acceso.movimiento !== 'entrada') return false;
+  const patente = acceso.patente.trim().toUpperCase();
+  const ultimoMovimiento = accesos.find(a => (a.patente || '').trim().toUpperCase() === patente);
+  return ultimoMovimiento?.id === acceso.id && ultimoMovimiento.movimiento === 'entrada';
+}
+
+function darSalidaVehiculo(id) {
+  const accesos = DB.get('accesos');
+  const entrada = accesos.find(a => a.id === id);
+  if(!vehiculoSigueAdentro(entrada, accesos)) {
+    alert('Este vehículo ya tiene una salida registrada o no tiene patente cargada.');
+    renderAccesos();
+    return;
+  }
+  if(!confirm(`¿Registrar salida del vehículo ${entrada.patente}?`)) return;
+  const turnoActivo = getTurnoActivo();
+  const salida = {
+    ...entrada,
+    id: DB.id(),
+    movimiento: 'salida',
+    fecha: fechaLocalISO(),
+    hora: timeNow(),
+    obs: entrada.obs ? `${entrada.obs} | Salida registrada desde ingreso` : 'Salida registrada desde ingreso',
+    guardiaId: turnoActivo ? turnoActivo.guardiaId : (entrada.guardiaId || ''),
+    guardiaNombre: turnoActivo ? turnoActivo.guardiaNombre : (entrada.guardiaNombre || '')
+  };
+  accesos.unshift(salida);
+  DB.set('accesos', accesos);
+  renderDashboard();
+  renderAccesos();
+  if(document.body.classList.contains('is-owner')) renderPortalPropietario();
 }
 
 function renderAccesos() {
@@ -3994,6 +4182,7 @@ function renderAccesos() {
     const modoLabel = {vehiculo:'Vehiculo',caminando:'Caminando',motocicleta:'Motocicleta',bicicleta:'Bicicleta'}[a.modoIngreso || (a.patente ? 'vehiculo' : 'caminando')] || 'Vehiculo';
     const vehiculoDetalle = [a.marca,a.color].filter(Boolean).join(' - ');
     const vehiculoHtml = a.patente ? `<strong>${a.patente}</strong> <span class="badge badge-gray">${modoLabel}</span>${vehiculoDetalle ? `<br><span style="font-size:11px;color:var(--text3)">${vehiculoDetalle}</span>` : ''}` : `<span class="badge badge-gray">${modoLabel}</span>`;
+    const puedeDarSalida = vehiculoSigueAdentro(a, accesos);
     return `<tr>
       <td><strong>${a.hora||'–'}</strong><br><span style="font-size:11px;color:var(--text3)">${a.fecha||''}</span></td>
       <td>${a.nombre||'–'}</td>
@@ -4004,6 +4193,7 @@ function renderAccesos() {
       <td><span class="badge ${movBadge}">${a.movimiento}</span></td>
       <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.obs||''}</td>
       <td style="display:flex;gap:4px">
+        ${puedeDarSalida ? `<button class="btn btn-sm btn-primary" onclick="darSalidaVehiculo('${a.id}')">Dar salida</button>` : ''}
         <button class="btn btn-sm" onclick="editarAcceso('${a.id}')">Editar</button>
         <button class="btn btn-sm btn-danger" onclick="eliminar('accesos','${a.id}',renderAccesos)">×</button>
       </td>
@@ -5118,12 +5308,21 @@ function renderIncidentes() {
   `).join('');
 }
 
+function normalizarDestinoMensaje(destino) {
+  const value = String(destino || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if(value === 'garita' || value === 'seguridad') return 'garita';
+  return 'administracion';
+}
+
 function renderBuzonDestino(destino, containerId, limit = 20) {
   const el = document.getElementById(containerId);
   if(!el) return;
-  const mensajes = DB.get('buzon').filter(m => m.destino === destino).slice(0, limit);
+  const destinoNormalizado = normalizarDestinoMensaje(destino);
+  const mensajes = DB.get('buzon')
+    .filter(m => normalizarDestinoMensaje(m.destino) === destinoNormalizado)
+    .slice(0, limit);
   if(!mensajes.length) {
-    el.innerHTML = `<div class="empty">Sin mensajes para ${destino === 'garita' ? 'garita' : 'administración'}.</div>`;
+    el.innerHTML = `<div class="empty">Sin mensajes para ${destinoNormalizado === 'garita' ? 'garita' : 'administración'}.</div>`;
     return;
   }
   el.innerHTML = mensajes.map(m => `
@@ -5154,6 +5353,13 @@ function renderBuzonDestino(destino, containerId, limit = 20) {
   `).join('');
 }
 
+function renderBuzones() {
+  renderBuzonDestino('garita','lista-buzon-garita');
+  renderBuzonDestino('garita','lista-buzon-garita-resumen',5);
+  renderBuzonDestino('administracion','consorcio-buzon',20);
+  renderBuzonDestino('administracion','principal-admin-buzon',10);
+}
+
 function cambiarEstadoMensaje(id, estado) {
   const mensajes = DB.get('buzon');
   const item = mensajes.find(m => m.id === id);
@@ -5162,8 +5368,7 @@ function cambiarEstadoMensaje(id, estado) {
   item.actualizado = new Date().toISOString();
   DB.set('buzon', mensajes);
   renderMensajesPropietario();
-  renderBuzonDestino('garita','lista-buzon-garita');
-  renderBuzonDestino('administracion','consorcio-buzon',20);
+  renderBuzones();
 }
 
 function responderMensaje(id) {
@@ -5182,8 +5387,7 @@ function responderMensaje(id) {
   item.actualizado = item.respondidoTs;
   DB.set('buzon', mensajes);
   renderMensajesPropietario();
-  renderBuzonDestino('garita','lista-buzon-garita');
-  renderBuzonDestino('administracion','consorcio-buzon',20);
+  renderBuzones();
 }
 
 let paseScanStream = null;
@@ -5499,7 +5703,7 @@ function renderEmergencias() {
     <div class="emergency-panel">
       <div class="emergency-row">
         <div>
-          <div class="emergency-title"><span class="siren-logo" aria-hidden="true"><span></span></span> EMERGENCIA ACTIVA</div>
+          <div class="emergency-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> EMERGENCIA ACTIVA</div>
           <div style="margin-top:6px"><strong>${escapeHtml(emergenciaNombre(e))}</strong>${emergenciaDetalle(e) ? ' | ' + escapeHtml(emergenciaDetalle(e)) : ''}</div>
           <div class="page-sub">${emergenciaDestinoLabel(e)} | ${formatTs(e.ts)}${e.telefono ? ' | Tel. ' + escapeHtml(e.telefono) : ''}</div>
         </div>
@@ -5545,7 +5749,7 @@ function renderSeguridad() {
   renderRondines();
   renderIncidentes();
   renderPasesGarita();
-  renderBuzonDestino('garita','lista-buzon-garita');
+  renderBuzones();
   renderWhatsappGarita();
   renderEmergencias();
   renderSidebarStatus();
@@ -5667,7 +5871,7 @@ function renderConsorcio() {
       <div class="emergency-panel">
         <div class="emergency-row">
           <div>
-            <div class="emergency-title"><span class="siren-logo" aria-hidden="true"><span></span></span> EMERGENCIA ACTIVA</div>
+            <div class="emergency-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> EMERGENCIA ACTIVA</div>
             <div style="margin-top:6px"><strong>${escapeHtml(emergenciaNombre(e))}</strong>${emergenciaDetalle(e) ? ' | ' + escapeHtml(emergenciaDetalle(e)) : ''}</div>
             <div class="page-sub">${emergenciaDestinoLabel(e)} | ${formatTs(e.ts)}${e.telefono ? ' | Tel. ' + escapeHtml(e.telefono) : ''}</div>
           </div>
@@ -5727,7 +5931,7 @@ function renderConsorcio() {
       <button class="btn" onclick="showPage('lotes')">Ver propietarios</button>
     `;
   }
-  renderBuzonDestino('administracion','consorcio-buzon',20);
+  renderBuzones();
   renderAdminAccessControl();
   corregirTextosVisibles();
 }
@@ -5838,9 +6042,15 @@ function showAlert(containerId, msg, type) {
 
 function toggleAccesoFields() {
   const tipo = document.getElementById('acc-tipo')?.value || 'residente';
+  const residenteGroup = document.getElementById('grp-acc-residente');
   const dniGroup = document.getElementById('grp-acc-dni');
   const dniStatus = document.getElementById('acc-dni-status');
   const dniInput = document.getElementById('acc-dni');
+  if(residenteGroup) residenteGroup.style.display = tipo === 'residente' ? '' : 'none';
+  if(tipo !== 'residente') {
+    const select = document.getElementById('acc-residente');
+    if(select) select.value = '';
+  }
   if(dniGroup) dniGroup.style.display = (tipo === 'visita' || tipo === 'proveedor' || tipo === 'residente') ? '' : 'none';
   if(dniInput) dniInput.placeholder = tipo === 'visita' ? 'DNI/CUIL de la visita' : 'DNI/CUIL opcional';
   if(dniStatus && tipo !== 'visita') dniStatus.textContent = '';
@@ -5911,13 +6121,19 @@ function corregirTextosVisibles() {
   });
 }
 
+function removerBotonSalidaPrincipal() {
+  document.querySelectorAll('.main-action.exit, button[onclick*="salida"]').forEach(btn => btn.remove());
+}
+
 // ===================== INIT =====================
+removerBotonSalidaPrincipal();
 ajustarEtiquetasCompatibles();
 selectLoginRole(localStorage.getItem('gd_auth_role') || 'seguridad');
 syncAuthState();
 applyTheme(currentTheme());
 placeThemeToggle();
 renderDashboard();
+renderPrincipal();
 renderSidebarStatus();
 window.addEventListener('storage', () => {
   if(document.body.classList.contains('is-owner')) renderPortalPropietario();
