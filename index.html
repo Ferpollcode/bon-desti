@@ -3,9 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BON DESTI">
 <title>BON DESTI - Control de accesos</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icons/icon.svg">
+<link rel="stylesheet" href="assets/vendor/tabler-icons/tabler-icons.min.css">
+<script src="assets/vendor/qrcode.min.js"></script>
 <style>
   :root {
     --bg: #f7f6f3;
@@ -146,6 +153,22 @@
   .access-name { font-weight: 500; font-size: 13px; }
   .access-detail { font-size: 12px; color: var(--text3); margin-top: 2px; }
   .access-time { font-size: 12px; color: var(--text2); font-weight: 500; white-space: nowrap; }
+  .resident-message-list { display: grid; gap: 10px; }
+  .resident-message {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    background: rgba(255,255,255,0.03);
+  }
+  .resident-message-header {
+    align-items: flex-start;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .resident-message-body { color: var(--text); line-height: 1.45; white-space: pre-wrap; }
+  .resident-message-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   
   /* Empty state */
   .empty { text-align: center; padding: 40px 20px; color: var(--text3); }
@@ -538,30 +561,25 @@
     padding: 28px;
   }
   .sidebar-logo h1 {
-    align-items: center;
     color: var(--accent-text);
-    display: flex;
     font-weight: 800;
-    gap: 10px;
     letter-spacing: 0.6px;
   }
-  .sidebar-logo h1::before {
-    align-items: center;
-    background: linear-gradient(135deg, var(--accent), var(--purple));
-    border-radius: 10px;
-    box-shadow: 0 0 22px rgba(0, 182, 122, .35);
-    color: white;
-    content: "BD";
-    display: inline-flex;
-    font-size: 12px;
-    height: 34px;
-    justify-content: center;
-    width: 34px;
+  .sidebar-logo-img {
+    background: #fffaf2;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    display: block;
+    height: auto;
+    max-height: 96px;
+    object-fit: contain;
+    padding: 6px;
+    width: 100%;
   }
   .sidebar-logo p {
     color: var(--text3);
     line-height: 1.35;
-    padding-left: 44px;
+    margin-top: 10px;
   }
   .nav { padding: 12px 10px; }
   .nav-item {
@@ -989,18 +1007,14 @@
     .sidebar-logo {
       padding: max(12px, env(safe-area-inset-top)) 14px 10px;
     }
-    .sidebar-logo h1 {
-      font-size: 12px;
-    }
-    .sidebar-logo h1::before {
-      border-radius: 8px;
-      height: 30px;
-      min-width: 30px;
-      width: 30px;
+    .sidebar-logo-img {
+      max-height: 58px;
+      max-width: 130px;
+      padding: 4px;
     }
     .sidebar-logo p {
       font-size: 10px;
-      padding-left: 40px;
+      margin-top: 6px;
     }
     .nav {
       display: flex;
@@ -1647,6 +1661,13 @@
     </div>
 
     <div class="owner-card">
+      <div class="card-title">QR de residentes</div>
+      <div class="page-sub">Cada residente puede usar su QR desde el teléfono o impreso en el vehículo para registrar ingreso y salida.</div>
+      <div class="divider"></div>
+      <div id="owner-resident-qr-lista"></div>
+    </div>
+
+    <div class="owner-card">
       <div class="card-title">Rondines nocturnos</div>
       <div id="owner-rondines"></div>
     </div>
@@ -1665,6 +1686,29 @@
       <div class="divider"></div>
       <div class="card-title">Asambleas virtuales</div>
       <div id="owner-votaciones"></div>
+    </div>
+
+    <div class="owner-card">
+      <div class="card-title">Mensajería entre residentes</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Enviar a</label>
+          <select id="owner-msg-destino"></select>
+        </div>
+        <div class="form-group">
+          <label>Asunto</label>
+          <input id="owner-msg-asunto" type="text" placeholder="Ej: reunión, aviso, consulta">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Mensaje</label>
+        <textarea id="owner-msg-mensaje" placeholder="Escriba el mensaje para otro residente"></textarea>
+      </div>
+      <button class="btn btn-primary" type="button" onclick="enviarMensajeEntreResidentes()"><i class="ti ti-send"></i> Enviar mensaje</button>
+      <div id="owner-msg-status" class="import-result" hidden></div>
+      <div class="divider"></div>
+      <div class="card-title">Conversaciones de mi casa</div>
+      <div id="owner-msg-lista"></div>
     </div>
 
     <div class="owner-card" id="owner-autorizar-visita">
@@ -1770,7 +1814,7 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <h1>BON DESTI</h1>
+      <img class="sidebar-logo-img" src="assets/bon-desti-logo.png" alt="Bon Desti - Complejo Residencial">
       <p>Pueyrredon 633, Rodeo del Medio - Maipú - Mendoza</p>
     </div>
     <nav class="nav">
@@ -1815,7 +1859,7 @@
 
       <button class="qr-scan-cta" type="button" onclick="abrirEscaneoQrIngreso()">
         <i class="ti ti-qrcode"></i>
-        <span>Escanear QR para verificar ingreso</span>
+        <span>Escanear QR para verificar ingreso y salida</span>
       </button>
 
       <div class="main-actions">
@@ -2385,13 +2429,13 @@
       <div id="security-tab-pases" class="tab-panel">
         <div class="security-grid">
           <div class="card">
-            <div class="card-title">Escanear pase QR</div>
+            <div class="card-title">Escanear QR de visita o residente</div>
             <div class="form-group">
-              <label>Código del pase</label>
-              <textarea id="pase-scan-input" placeholder="Escanee el QR o pegue aquí el código del pase"></textarea>
+              <label>Código QR</label>
+              <textarea id="pase-scan-input" placeholder="Escanee el QR o pegue aquí el código"></textarea>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn btn-primary" onclick="validarPaseDesdeGarita()"><i class="ti ti-qrcode"></i> Validar pase</button>
+              <button class="btn btn-primary" onclick="validarPaseDesdeGarita()"><i class="ti ti-qrcode"></i> Validar QR</button>
               <button class="btn" onclick="iniciarEscaneoPase()"><i class="ti ti-camera"></i> Usar cámara</button>
               <button class="btn" onclick="detenerEscaneoPase()"><i class="ti ti-camera-off"></i> Detener</button>
             </div>
@@ -2936,7 +2980,7 @@
   <option value="Crema">
 </datalist>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="assets/vendor/xlsx.full.min.js"></script>
 <script>
 // ===================== LOGIN =====================
 const LOGIN_ROLES = {
@@ -3118,6 +3162,8 @@ function renderPortalPropietario() {
   }
   renderIngresosHabitantesHoy();
   renderAccessControlPropietario();
+  renderMensajeriaResidentes();
+  renderQrsResidentesPropietario();
   renderPasesPropietario();
   renderMensajesPropietario();
   corregirTextosVisibles();
@@ -3290,6 +3336,115 @@ function renderAccessControlPropietario() {
         </div>`;
     }).join('') : '<div class="empty">Sin votaciones abiertas.</div>';
   }
+}
+
+function renderMensajeriaResidentes() {
+  popularDestinatariosMensajeria();
+  renderMensajesEntreResidentes();
+}
+
+function popularDestinatariosMensajeria() {
+  const select = document.getElementById('owner-msg-destino');
+  if(!select) return;
+  const loteActualId = document.getElementById('owner-lote')?.value || '';
+  const valorActual = select.value;
+  const lotes = DB.get('lotes')
+    .filter(l => l.id !== loteActualId)
+    .sort((a,b) => String(a.numero).localeCompare(String(b.numero), 'es', {numeric:true}));
+  select.innerHTML = '<option value="">-- Seleccionar residente --</option>';
+  lotes.forEach(lote => {
+    const opt = document.createElement('option');
+    opt.value = lote.id;
+    opt.textContent = `${loteLabel(lote)}${lote.propietario ? ' - ' + lote.propietario : ''}`;
+    select.appendChild(opt);
+  });
+  if(valorActual && lotes.some(l => l.id === valorActual)) select.value = valorActual;
+}
+
+function enviarMensajeEntreResidentes() {
+  const origenId = document.getElementById('owner-lote')?.value || '';
+  const destinoId = document.getElementById('owner-msg-destino')?.value || '';
+  const origen = DB.get('lotes').find(l => l.id === origenId);
+  const destino = DB.get('lotes').find(l => l.id === destinoId);
+  if(!origen) { alert('Seleccione su casa antes de enviar un mensaje.'); return; }
+  if(!destino) { alert('Seleccione el residente destinatario.'); return; }
+  if(origen.id === destino.id) { alert('El destinatario debe ser otra casa.'); return; }
+
+  const asunto = document.getElementById('owner-msg-asunto')?.value.trim() || '';
+  const mensaje = document.getElementById('owner-msg-mensaje')?.value.trim() || '';
+  if(!asunto || !mensaje) { alert('Complete asunto y mensaje.'); return; }
+
+  const mensajes = DB.get('mensajesResidentes');
+  mensajes.unshift({
+    id: DB.id(),
+    ts: new Date().toISOString(),
+    asunto,
+    mensaje,
+    estado: 'enviado',
+    leido: false,
+    origenLoteId: origen.id,
+    origenLabel: loteLabel(origen),
+    origenPropietario: origen.propietario || '',
+    destinoLoteId: destino.id,
+    destinoLabel: loteLabel(destino),
+    destinoPropietario: destino.propietario || ''
+  });
+  DB.set('mensajesResidentes', mensajes);
+  ['owner-msg-asunto','owner-msg-mensaje'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  const status = document.getElementById('owner-msg-status');
+  if(status) {
+    status.hidden = false;
+    status.innerHTML = `<strong>Mensaje enviado.</strong><br>Destino: ${escapeHtml(loteLabel(destino))}.`;
+  }
+  renderMensajeriaResidentes();
+}
+
+function renderMensajesEntreResidentes() {
+  const box = document.getElementById('owner-msg-lista');
+  if(!box) return;
+  const loteId = document.getElementById('owner-lote')?.value || '';
+  if(!loteId) {
+    box.innerHTML = '<div class="empty">Seleccione su casa para ver conversaciones.</div>';
+    return;
+  }
+  const mensajes = DB.get('mensajesResidentes')
+    .filter(m => m.origenLoteId === loteId || m.destinoLoteId === loteId)
+    .slice(0, 20);
+  if(!mensajes.length) {
+    box.innerHTML = '<div class="empty">Todavía no hay mensajes entre residentes para esta casa.</div>';
+    return;
+  }
+  box.innerHTML = `<div class="resident-message-list">${mensajes.map(m => {
+    const enviado = m.origenLoteId === loteId;
+    const contraparte = enviado
+      ? `${m.destinoLabel || 'Casa destino'}${m.destinoPropietario ? ' - ' + m.destinoPropietario : ''}`
+      : `${m.origenLabel || 'Casa origen'}${m.origenPropietario ? ' - ' + m.origenPropietario : ''}`;
+    return `
+      <div class="resident-message">
+        <div class="resident-message-header">
+          <div>
+            <div class="access-name">${escapeHtml(m.asunto || 'Sin asunto')}</div>
+            <div class="access-detail">${enviado ? 'Para' : 'De'} ${escapeHtml(contraparte)} | ${formatTs(m.ts)}</div>
+          </div>
+          <span class="badge ${enviado ? 'badge-blue' : m.leido ? 'badge-green' : 'badge-amber'}">${enviado ? 'Enviado' : m.leido ? 'Leído' : 'Nuevo'}</span>
+        </div>
+        <div class="resident-message-body">${escapeHtml(m.mensaje || '')}</div>
+        ${!enviado && !m.leido ? `<div class="resident-message-actions"><button class="btn btn-sm" onclick="marcarMensajeResidenteLeido('${m.id}')"><i class="ti ti-check"></i> Marcar leído</button></div>` : ''}
+      </div>`;
+  }).join('')}</div>`;
+}
+
+function marcarMensajeResidenteLeido(id) {
+  const mensajes = DB.get('mensajesResidentes');
+  const mensaje = mensajes.find(m => m.id === id);
+  if(!mensaje) return;
+  mensaje.leido = true;
+  mensaje.leidoTs = new Date().toISOString();
+  DB.set('mensajesResidentes', mensajes);
+  renderMensajesEntreResidentes();
 }
 
 function votarAsamblea(votacionId, opcionEncoded) {
@@ -4300,8 +4455,172 @@ function loteLabel(lote) {
 }
 
 // ===================== RESIDENTES =====================
+function crearTokenQrResidente() {
+  return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+}
+
+function asegurarQrResidente(residente) {
+  if(!residente) return null;
+  if(!residente.qrToken) residente.qrToken = crearTokenQrResidente();
+  residente.qrCodigo = 'BDR1.' + residente.id + '.' + residente.qrToken;
+  return residente;
+}
+
+function obtenerResidenteConQr(id) {
+  const residentes = DB.get('residentes');
+  const residente = residentes.find(r => r.id === id);
+  if(!residente) return null;
+  if(!residente.qrToken || !residente.qrCodigo) {
+    asegurarQrResidente(residente);
+    DB.set('residentes', residentes);
+  }
+  return residente;
+}
+
+function renderQrResidenteCanvas(id) {
+  const residente = obtenerResidenteConQr(id);
+  if(!residente) return;
+  renderQrPase('residente-' + residente.id, residente.qrCodigo);
+}
+
+function renderQrsResidentesPropietario() {
+  const box = document.getElementById('owner-resident-qr-lista');
+  if(!box) return;
+  const loteId = document.getElementById('owner-lote')?.value || '';
+  if(!loteId) {
+    box.innerHTML = '<div class="empty">Seleccione su casa para ver los QR de residentes.</div>';
+    return;
+  }
+  const residentes = DB.get('residentes')
+    .filter(r => r.loteId === loteId)
+    .map(r => obtenerResidenteConQr(r.id))
+    .filter(Boolean);
+  if(!residentes.length) {
+    box.innerHTML = '<div class="empty">No hay residentes cargados para esta casa.</div>';
+    return;
+  }
+  box.innerHTML = residentes.map(r => `
+    <div class="access-entry" style="align-items:flex-start">
+      <div class="access-info">
+        <div class="access-name">${escapeHtml(r.nombre || 'Residente')} <span class="badge ${r.acceso === 'habilitado' ? 'badge-green' : 'badge-red'}">${r.acceso === 'habilitado' ? 'Habilitado' : 'Sin habilitación'}</span></div>
+        <div class="access-detail">DNI/CUIL ${escapeHtml(r.dni || '-')} | ${escapeHtml(r.relacion || 'residente')}</div>
+        <div class="pass-qr-card">
+          <canvas id="qr-pass-residente-${r.id}"></canvas>
+          <div>
+            <div class="page-sub">QR permanente para ingreso y salida de residente.</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+              <button class="btn btn-sm" onclick="descargarQrResidente('${r.id}')"><i class="ti ti-download"></i> Descargar QR</button>
+              <button class="btn btn-sm btn-primary" onclick="compartirQrResidente('${r.id}')"><i class="ti ti-share"></i> Compartir QR</button>
+              <button class="btn btn-sm" onclick="copiarQrResidente('${r.id}')"><i class="ti ti-copy"></i> Copiar código</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  residentes.forEach(r => renderQrResidenteCanvas(r.id));
+}
+
+function textoQrResidente(residente) {
+  const lote = DB.get('lotes').find(l => l.id === residente.loteId);
+  return [
+    'QR permanente BON DESTI',
+    'Residente: ' + (residente.nombre || ''),
+    'DNI/CUIL: ' + (residente.dni || ''),
+    'Casa: ' + loteLabel(lote),
+    'Código QR: ' + (residente.qrCodigo || '')
+  ].join('\n');
+}
+
+function copiarQrResidente(id) {
+  const residente = obtenerResidenteConQr(id);
+  if(!residente) return;
+  navigator.clipboard?.writeText(textoQrResidente(residente));
+  alert('Código QR de residente copiado.');
+}
+
+function descargarQrResidente(id) {
+  const residente = obtenerResidenteConQr(id);
+  if(!residente) return;
+  let canvas = document.getElementById('qr-pass-residente-' + residente.id);
+  if(!canvas) {
+    renderQrsResidentesPropietario();
+    canvas = document.getElementById('qr-pass-residente-' + residente.id);
+  }
+  if(!canvas) return;
+  const link = document.createElement('a');
+  link.download = `QR_Residente_Bon_Desti_${residente.dni || residente.id}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function compartirQrResidente(id) {
+  const residente = obtenerResidenteConQr(id);
+  if(!residente) return;
+  let canvas = document.getElementById('qr-pass-residente-' + residente.id);
+  if(!canvas) {
+    renderQrsResidentesPropietario();
+    await new Promise(resolve => setTimeout(resolve, 350));
+    canvas = document.getElementById('qr-pass-residente-' + residente.id);
+  }
+  if(!canvas || !canvas.toBlob) { copiarQrResidente(id); return; }
+  canvas.toBlob(async blob => {
+    if(!blob) { copiarQrResidente(id); return; }
+    const file = new File([blob], `QR_Residente_Bon_Desti_${residente.dni || residente.id}.png`, {type:'image/png'});
+    const text = textoQrResidente(residente);
+    if(navigator.canShare && navigator.canShare({files:[file]})) {
+      await navigator.share({title:'QR residente Bon Desti', text, files:[file]});
+    } else {
+      descargarQrResidente(id);
+    }
+  }, 'image/png');
+}
+
+function descargarQrResidenteAdmin(id) {
+  const residente = obtenerResidenteConQr(id);
+  if(!residente) return;
+  const canvas = document.createElement('canvas');
+  canvas.id = 'qr-pass-residente-admin-' + residente.id;
+  canvas.width = 220;
+  canvas.height = 220;
+  canvas.style.position = 'fixed';
+  canvas.style.left = '-9999px';
+  document.body.appendChild(canvas);
+  if(window.QRCode?.toCanvas) {
+    window.QRCode.toCanvas(canvas, residente.qrCodigo, {width: 220, margin: 1, errorCorrectionLevel: 'M'}, err => {
+      if(err) generarQrLocal(canvas, residente.qrCodigo);
+      descargarCanvasQrResidente(residente, canvas);
+    });
+  } else {
+    generarQrLocal(canvas, residente.qrCodigo);
+    descargarCanvasQrResidente(residente, canvas);
+  }
+}
+
+function descargarCanvasQrResidente(residente, canvas) {
+  const link = document.createElement('a');
+  link.download = `QR_Residente_Bon_Desti_${residente.dni || residente.id}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  setTimeout(() => canvas.remove(), 500);
+}
+
+function regenerarQrResidente(id) {
+  if(!confirm('¿Regenerar el QR de este residente? El QR anterior dejará de validar.')) return;
+  const residentes = DB.get('residentes');
+  const residente = residentes.find(r => r.id === id);
+  if(!residente) return;
+  residente.qrToken = crearTokenQrResidente();
+  asegurarQrResidente(residente);
+  DB.set('residentes', residentes);
+  renderResidentes();
+  renderPropietariosResidentes();
+  if(document.body.classList.contains('is-owner')) renderQrsResidentesPropietario();
+}
+
 function guardarResidente() {
   const editId = document.getElementById('res-edit-id').value;
+  const existente = editId ? DB.get('residentes').find(r => r.id === editId) : null;
   const res = {
     id: editId || DB.id(),
     nombre: document.getElementById('res-nombre').value.trim(),
@@ -4309,8 +4628,10 @@ function guardarResidente() {
     loteId: document.getElementById('res-lote').value,
     relacion: document.getElementById('res-relacion').value,
     tel: document.getElementById('res-tel').value.trim(),
-    acceso: document.getElementById('res-acceso').value
+    acceso: document.getElementById('res-acceso').value,
+    qrToken: existente?.qrToken || crearTokenQrResidente()
   };
+  asegurarQrResidente(res);
   if(!res.nombre) { alert('El nombre es requerido'); return; }
   let arr = DB.get('residentes');
   if(editId){ const i=arr.findIndex(r=>r.id===editId); if(i>-1) arr[i]=res; }
@@ -4321,6 +4642,7 @@ function guardarResidente() {
   closeModal('modal-residente');
   renderResidentes();
   renderPropietariosResidentes();
+  if(document.body.classList.contains('is-owner')) renderQrsResidentesPropietario();
 }
 
 function renderResidentes() {
@@ -4346,6 +4668,8 @@ function renderResidentes() {
       <td>${r.tel||'–'}</td>
       <td><span class="badge ${r.acceso==='habilitado'?'badge-green':'badge-red'}">${r.acceso}</span></td>
       <td style="display:flex;gap:4px">
+        <button class="btn btn-sm" onclick="descargarQrResidenteAdmin('${r.id}')">QR</button>
+        <button class="btn btn-sm" onclick="regenerarQrResidente('${r.id}')">Regenerar</button>
         <button class="btn btn-sm btn-danger" onclick="eliminar('residentes','${r.id}',renderResidentes)">×</button>
       </td>
     </tr>`;
@@ -4373,7 +4697,11 @@ function renderPropietariosResidentes() {
       <td>${r.relacion}</td>
       <td>${r.tel||'-'}</td>
       <td><span class="badge ${r.acceso==='habilitado'?'badge-green':'badge-red'}">${r.acceso}</span></td>
-      <td><button class="btn btn-sm btn-danger" onclick="eliminar('residentes','${r.id}',()=>{renderResidentes();renderPropietariosResidentes();})">X</button></td>
+      <td style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="btn btn-sm" onclick="descargarQrResidenteAdmin('${r.id}')">QR</button>
+        <button class="btn btn-sm" onclick="regenerarQrResidente('${r.id}')">Regenerar</button>
+        <button class="btn btn-sm btn-danger" onclick="eliminar('residentes','${r.id}',()=>{renderResidentes();renderPropietariosResidentes();})">X</button>
+      </td>
     </tr>`;
   }).join('');
 }
@@ -5438,14 +5766,52 @@ function validarPaseTemporalCodigo(codigo) {
   return {...estado, pass};
 }
 
+function parsearCodigoResidente(value) {
+  const raw = String(value || '').trim();
+  if(!raw.startsWith('BDR1.')) return null;
+  const parts = raw.split('.');
+  if(parts.length !== 3) return null;
+  return {id: parts[1], token: parts[2]};
+}
+
+function validarQrResidenteCodigo(codigo) {
+  const data = parsearCodigoResidente(codigo);
+  if(!data?.id || !data?.token) return {ok:false, motivo:'Código QR de residente inválido.'};
+  const residente = DB.get('residentes').find(r => r.id === data.id);
+  if(!residente) return {ok:false, motivo:'Residente no registrado en el sistema.'};
+  asegurarQrResidente(residente);
+  if(residente.qrToken !== data.token) return {ok:false, motivo:'El QR de residente fue regenerado o no coincide.'};
+  if(residente.acceso && residente.acceso !== 'habilitado') return {ok:false, motivo:'Residente sin habilitación activa.', residente};
+  return {ok:true, motivo:'Residente habilitado.', residente};
+}
+
+function validarCodigoIngresoQr(codigo) {
+  const raw = String(codigo || '').trim();
+  if(raw.startsWith('BDR1.')) return {tipo: 'residente', ...validarQrResidenteCodigo(raw)};
+  return {tipo: 'visita', ...validarPaseTemporalCodigo(raw)};
+}
+
 function validarPaseDesdeGarita(codigoManual = '') {
   const input = document.getElementById('pase-scan-input');
   const box = document.getElementById('pase-validacion-result');
   const codigo = codigoManual || input?.value || '';
-  const result = validarPaseTemporalCodigo(codigo);
+  const result = validarCodigoIngresoQr(codigo);
   if(input && codigoManual) input.value = codigoManual;
   if(!box) return result;
-  if(result.ok) {
+  if(result.ok && result.tipo === 'residente') {
+    const r = result.residente;
+    const lote = DB.get('lotes').find(l => l.id === r.loteId);
+    box.innerHTML = `
+      <div class="validation-card ok">
+        <div class="validation-title"><i class="ti ti-circle-check"></i> RESIDENTE HABILITADO</div>
+        <div><strong>${escapeHtml(r.nombre)}</strong> | DNI/CUIL ${escapeHtml(r.dni || '-')}</div>
+        <div>${escapeHtml(loteLabel(lote))}</div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="registrarAccesoResidenteQr('${r.id}','entrada')"><i class="ti ti-login-2"></i> Registrar ingreso</button>
+          <button class="btn" onclick="registrarAccesoResidenteQr('${r.id}','salida')"><i class="ti ti-logout"></i> Registrar salida</button>
+        </div>
+      </div>`;
+  } else if(result.ok) {
     const p = result.pass;
     box.innerHTML = `
       <div class="validation-card ok">
@@ -5466,6 +5832,48 @@ function validarPaseDesdeGarita(codigoManual = '') {
   }
   renderPasesGarita();
   return result;
+}
+
+function registrarAccesoResidenteQr(id, movimiento) {
+  const residente = DB.get('residentes').find(r => r.id === id);
+  if(!residente) return;
+  if(residente.acceso && residente.acceso !== 'habilitado') {
+    alert('Residente sin habilitación activa.');
+    return;
+  }
+  const lote = DB.get('lotes').find(l => l.id === residente.loteId);
+  const vehiculos = DB.get('vehiculos').filter(v => v.loteId === residente.loteId);
+  const nombreResidente = textoNormalizado(residente.nombre);
+  const vehiculo = vehiculos.find(v => {
+    const titular = textoNormalizado(v.titular);
+    return titular && nombreResidente && (titular === nombreResidente || titular.includes(nombreResidente) || nombreResidente.includes(titular));
+  }) || (vehiculos.length === 1 ? vehiculos[0] : null);
+  const turnoActivo = getTurnoActivo();
+  const accesos = DB.get('accesos');
+  accesos.unshift({
+    id: DB.id(),
+    tipo: 'residente',
+    movimiento: movimiento === 'salida' ? 'salida' : 'entrada',
+    dni: residente.dni || '',
+    nombre: residente.nombre || '',
+    loteId: residente.loteId || '',
+    modoIngreso: vehiculo ? (vehiculo.tipo === 'moto' ? 'motocicleta' : 'vehiculo') : 'vehiculo',
+    patente: vehiculo?.patente || '',
+    marca: vehiculo ? [vehiculo.marca, vehiculo.modelo].filter(Boolean).join(' ') : '',
+    color: vehiculo?.color || '',
+    hora: timeNow(),
+    obs: `Registro con QR permanente de residente${lote ? ' - ' + loteLabel(lote) : ''}`,
+    fecha: fechaLocalISO(),
+    residenteId: residente.id,
+    qrResidente: true,
+    guardiaId: turnoActivo ? turnoActivo.guardiaId : '',
+    guardiaNombre: turnoActivo ? turnoActivo.guardiaNombre : ''
+  });
+  DB.set('accesos', accesos);
+  alert(`${movimiento === 'salida' ? 'Salida' : 'Ingreso'} registrado para ${residente.nombre}.`);
+  renderPasesGarita();
+  renderAccesos();
+  renderDashboard();
 }
 
 function registrarIngresoPase(id) {
@@ -6151,6 +6559,11 @@ setInterval(() => {
   if(document.getElementById('page-seguridad')?.classList.contains('active')) renderEmergencias();
   if(document.getElementById('page-consorcio')?.classList.contains('active')) renderConsorcio();
 }, 15000);
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>

@@ -3,3 +3,5 @@ work/
 *_guardado_*/
 *.tmp
 *.log
+node_modules/
+dist/

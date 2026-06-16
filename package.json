@@ -1,0 +1,28 @@
+{
+  "name": "bon-desti",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Aplicacion instalable para BON DESTI.",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "node scripts/dev.js",
+    "serve": "npx http-server dist -p 4173",
+    "cap:sync": "npm run build && npx cap sync",
+    "cap:android": "npm run build && npx cap open android",
+    "cap:ios": "npm run build && npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
+    "@tabler/icons-webfont": "^3.44.0",
+    "qrcode": "^1.5.4",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
+    "esbuild": "^0.28.1",
+    "http-server": "^14.1.1",
+    "typescript": "^6.0.3"
+  }
+}

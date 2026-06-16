@@ -9,10 +9,50 @@ Permite gestionar la operacion diaria de garita, el portal de habitantes, acceso
 Archivo principal:
 
 ```text
-barrio_accesos.html
+index.html
 ```
 
 Se puede abrir directamente en el navegador, sin instalar dependencias ni iniciar un servidor.
+
+## App instalable
+
+La app queda preparada como PWA y como proyecto Capacitor para Android/iOS.
+
+### PWA
+
+Abrir la app desde un servidor web y usar la opcion del navegador para instalarla en la pantalla de inicio.
+
+Archivos clave:
+
+- `manifest.webmanifest`
+- `service-worker.js`
+- `assets/icons/icon.svg`
+
+### Build web
+
+```text
+npm install
+npm run build
+```
+
+El build se genera en `dist/`.
+
+### Android / iOS con Capacitor
+
+Las carpetas `android/` e `ios/` ya estan generadas. Para sincronizar cambios del HTML hacia las apps nativas:
+
+```text
+npm run cap:sync
+```
+
+Para abrir los proyectos:
+
+```text
+npm run cap:android
+npm run cap:ios
+```
+
+Android requiere JDK y Android Studio para compilar APK/AAB. iOS requiere macOS con Xcode.
 
 ## Pantalla inicial
 
