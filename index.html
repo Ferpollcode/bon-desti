@@ -44,7 +44,13 @@
   .main { margin-left: 220px; flex: 1; padding: 24px; max-width: 1100px; }
   
   /* Sidebar */
-  .sidebar-logo { padding: 20px 16px 16px; border-bottom: 1px solid var(--border); }
+  .sidebar-logo {
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    justify-items: center;
+    padding: 20px 16px 16px;
+    text-align: center;
+  }
   .sidebar-logo h1 { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.5px; text-transform: uppercase; }
   .sidebar-logo p { font-size: 11px; color: var(--text3); margin-top: 2px; }
   .nav { padding: 8px 0; flex: 1; }
@@ -82,6 +88,12 @@
   .btn-primary:hover { background: var(--accent-text); }
   .btn-danger { background: var(--danger-bg); color: var(--danger); border-color: #f7c1c1; }
   .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .page-header > .btn,
+  .section-actions .btn {
+    font-weight: 400;
+    justify-content: center;
+    text-align: center;
+  }
   .pass-days { display: flex; flex-wrap: wrap; gap: 8px; }
   .pass-days label { display: inline-flex; align-items: center; gap: 5px; padding: 7px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface2); font-size: 12px; }
   .pass-qr-card { display: grid; grid-template-columns: 220px 1fr; gap: 16px; align-items: start; margin-top: 12px; }
@@ -90,6 +102,9 @@
   .validation-card.ok { background: #ecfdf5; border-color: #86efac; color: #14532d; }
   .validation-card.fail { background: var(--danger-bg); border-color: #f7c1c1; color: var(--danger); }
   .validation-title { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .cleanup-toolbar { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .cleanup-check { align-items: center; display: inline-flex; gap: 6px; font-size: 12px; color: var(--text2); }
+  .cleanup-check input { width: auto; }
   @media (max-width: 760px) {
     .pass-qr-card { grid-template-columns: 1fr; }
   }
@@ -572,9 +587,10 @@
     display: block;
     height: auto;
     max-height: 96px;
+    max-width: 190px;
     object-fit: contain;
     padding: 6px;
-    width: 100%;
+    width: min(190px, 100%);
   }
   .sidebar-logo p {
     color: var(--text3);
@@ -716,21 +732,71 @@
     grid-template-columns: auto auto;
     justify-content: start;
   }
+  #page-principal > .page-header {
+    justify-content: center;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  #page-principal > .page-header > div:first-child {
+    align-items: center;
+    grid-template-columns: auto auto;
+    gap: 6px 12px;
+    justify-content: center;
+  }
+  #page-principal .page-title {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: clamp(28px, 7vw, 36px);
+    font-weight: 800;
+    line-height: 1.05;
+  }
+  #page-principal .page-sub {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    margin-top: 0;
+    text-align: center;
+  }
   .page-sub {
     grid-column: 1 / -1;
   }
   .theme-toggle {
     align-items: center;
+    background: rgba(15, 35, 58, 0.82);
+    border: 2px solid rgba(118, 247, 194, 0.70);
     border-radius: 999px;
-    display: inline-flex;
-    height: 36px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    height: 34px;
     justify-content: center;
-    min-height: 36px;
-    padding: 0;
-    width: 36px;
+    min-height: 34px;
+    padding: 3px;
+    position: static;
+    width: 68px;
+  }
+  .theme-toggle span {
+    align-items: center;
+    border-radius: 999px;
+    color: #e5edf7;
+    display: inline-flex;
+    height: 26px;
+    justify-content: center;
+    width: 28px;
   }
   .theme-toggle i {
-    font-size: 18px;
+    font-size: 17px;
+  }
+  .theme-toggle .theme-sun i {
+    color: #facc15;
+  }
+  .theme-toggle .theme-moon i {
+    color: #bfdbfe;
+  }
+  .theme-toggle[data-active-theme="light"] .theme-sun,
+  .theme-toggle[data-active-theme="dark"] .theme-moon {
+    background: #ffffff;
+    color: #0b1d33;
   }
   .session-logout-btn {
     border-color: rgba(255, 77, 94, 0.35);
@@ -761,8 +827,9 @@
     color: #fff;
     cursor: pointer;
     display: flex;
-    font-size: clamp(18px, 2.2vw, 28px);
-    font-weight: 950;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: 21px;
+    font-weight: 800;
     gap: 12px;
     justify-content: center;
     letter-spacing: 0;
@@ -773,6 +840,10 @@
     text-transform: uppercase;
     transition: .18s;
     width: 100%;
+  }
+  .qr-scan-cta span {
+    line-height: 1.25;
+    max-width: 360px;
   }
   .qr-scan-cta:hover {
     box-shadow: 0 22px 56px rgba(239,68,68,0.34);
@@ -787,6 +858,7 @@
     color: #fff;
     cursor: pointer;
     display: grid;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
     gap: 10px;
     justify-items: center;
     min-height: 150px;
@@ -795,6 +867,24 @@
     position: relative;
     text-align: center;
     transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  }
+  #page-principal .main-action {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+  #page-principal .main-action i {
+    display: none;
+  }
+  #page-principal .main-action > span {
+    display: block;
+    font-size: clamp(26px, 2.6vw, 42px);
+    line-height: 1.05;
+    max-width: 100%;
+    overflow-wrap: normal;
+    text-align: center;
+    white-space: nowrap;
+    width: 100%;
   }
   .main-action::after {
     background: rgba(255,255,255,0.13);
@@ -840,19 +930,23 @@
     z-index: 1;
   }
   .main-action > span {
-    font-size: clamp(24px, 3vw, 36px);
-    font-weight: 900;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: 21px;
+    font-weight: 800;
     letter-spacing: 0;
+    line-height: 1.25;
     position: relative;
+    text-transform: uppercase;
     z-index: 1;
   }
   .main-action.system { background: linear-gradient(135deg, #1d4ed8, var(--purple)); }
+  .main-action.qr { background: linear-gradient(135deg, #f59e0b, #ef4444); }
   .main-action.entry { background: linear-gradient(135deg, #008f5f, #00c781); }
   .main-action.exit,
   button[onclick="abrirMovimiento('salida')"] { display: none !important; }
   .main-action.emergency { background: linear-gradient(135deg, #991b1b, #ef4444); }
-  .main-action.emergency i { font-size: 50px; }
-  .main-action.emergency > span { font-size: clamp(18px, 2vw, 24px); }
+  .main-action.emergency i { font-size: 38px; }
+  .main-action.emergency > span { font-size: 21px; }
   .ingreso-type-modal {
     max-width: 760px;
     width: min(760px, 94vw);
@@ -866,6 +960,14 @@
     min-height: 190px;
     padding: 30px 26px;
   }
+  #modal-ingreso-tipo .main-action {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+  #modal-ingreso-tipo .main-action i {
+    display: none;
+  }
   .ingreso-type-actions .main-action i {
     font-size: 48px;
   }
@@ -873,6 +975,8 @@
     font-size: clamp(30px, 3vw, 42px);
     line-height: 1.05;
     overflow-wrap: anywhere;
+    text-align: center;
+    width: 100%;
     white-space: normal;
   }
   .system-overview {
@@ -961,6 +1065,18 @@
   html[data-theme="light"] .btn {
     background: rgba(255,255,255,0.80);
   }
+  html[data-theme="light"] .theme-toggle {
+    background: #dbeafe;
+    border-color: #2563eb;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.18);
+  }
+  html[data-theme="light"] .theme-toggle span {
+    color: #1e3a8a;
+  }
+  html[data-theme="light"] .theme-toggle[data-active-theme="light"] .theme-sun {
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.22);
+  }
   html[data-theme="light"] .btn-primary {
     background: linear-gradient(135deg, #00a86f, #008f5f);
     color: #ffffff;
@@ -1008,9 +1124,10 @@
       padding: max(12px, env(safe-area-inset-top)) 14px 10px;
     }
     .sidebar-logo-img {
-      max-height: 58px;
-      max-width: 130px;
-      padding: 4px;
+      max-height: 76px;
+      max-width: 180px;
+      padding: 5px;
+      width: min(180px, 64vw);
     }
     .sidebar-logo p {
       font-size: 10px;
@@ -1163,7 +1280,10 @@
       font-size: 32px;
     }
     .main-action span {
-      font-size: 28px;
+      font-size: 21px;
+    }
+    #page-principal .main-action > span {
+      font-size: clamp(30px, 8vw, 38px);
     }
     .system-overview {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1239,7 +1359,7 @@
       letter-spacing: 1px;
     }
     .main-action span {
-      font-size: 24px;
+      font-size: 21px;
     }
     table {
       min-width: 680px;
@@ -1412,6 +1532,9 @@
   }
   .page-title {
     color: #ffffff;
+  }
+  html[data-theme="light"] .page-title {
+    color: var(--text);
   }
   @media (max-width: 900px) {
     .login-logo-card {
@@ -1612,11 +1735,11 @@
       <div class="login-role-hint" id="login-role-hint">Ingreso para personal de garita.</div>
       <div class="form-group">
         <label>Usuario</label>
-        <input type="text" id="login-user" autocomplete="username" placeholder="Usuario">
+        <input type="text" id="login-user" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Usuario">
       </div>
       <div class="form-group">
         <label>Contraseña</label>
-        <input type="password" id="login-pass" autocomplete="current-password" placeholder="Contraseña">
+        <input type="password" id="login-pass" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Contraseña">
       </div>
       <div class="login-error" id="login-error"></div>
       <button class="btn btn-primary" type="submit"><i class="ti ti-login-2"></i> Ingresar</button>
@@ -1830,7 +1953,7 @@
         <span class="nav-icon"><i class="ti ti-home-shield"></i></span> Propietarios
       </button>
       <button class="nav-item" onclick="showPage('obras')">
-        <span class="nav-icon"><i class="ti ti-tool"></i></span> Obras y personal
+        <span class="nav-icon"><i class="ti ti-tool"></i></span> Obras y Personal
       </button>
       <button class="nav-item" onclick="showPage('seguridad')">
         <span class="nav-icon"><i class="ti ti-shield-lock"></i></span> Seguridad
@@ -1853,27 +1976,22 @@
       <div class="page-header">
         <div>
           <div class="page-title">Panel principal</div>
-          <div class="page-sub">Accesos rápidos de la garita</div>
+          <div class="page-sub">Accesos rápidos</div>
         </div>
       </div>
 
-      <button class="qr-scan-cta" type="button" onclick="abrirEscaneoQrIngreso()">
-        <i class="ti ti-qrcode"></i>
-        <span>Escanear QR para verificar ingreso y salida</span>
-      </button>
-
       <div class="main-actions">
-        <button class="main-action system" type="button" onclick="abrirSistema()">
-          <i class="ti ti-shield-lock"></i>
-          <span>SISTEMA</span>
+        <button class="main-action emergency" type="button" onclick="enviarEmergenciaGarita()">
+          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+          <span>EMERGENCIA</span>
         </button>
         <button class="main-action entry" type="button" onclick="abrirIngresoTipo()">
           <i class="ti ti-login-2"></i>
           <span>INGRESO</span>
         </button>
-        <button class="main-action emergency" type="button" onclick="enviarEmergenciaGarita()">
-          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
-          <span>EMERGENCIA</span>
+        <button class="main-action qr" type="button" onclick="abrirEscaneoQrIngreso()">
+          <i class="ti ti-qrcode"></i>
+          <span>ESCANEAR QR</span>
         </button>
       </div>
 
@@ -1885,7 +2003,7 @@
       <div class="system-overview" id="system-overview" hidden>
         <button class="system-card" type="button" onclick="showPage('accesos')"><i class="ti ti-barrier-block"></i><span>Registro de accesos</span></button>
         <button class="system-card" type="button" onclick="showPage('lotes')"><i class="ti ti-home-shield"></i><span>Propietarios</span></button>
-        <button class="system-card" type="button" onclick="showPage('obras')"><i class="ti ti-tool"></i><span>Obras y personal</span></button>
+        <button class="system-card" type="button" onclick="showPage('obras')"><i class="ti ti-tool"></i><span>Obras y Personal</span></button>
         <button class="system-card" type="button" onclick="showPage('seguridad')"><i class="ti ti-shield-lock"></i><span>Seguridad</span></button>
       </div>
     </div>
@@ -2004,7 +2122,7 @@
           <div class="page-title">Registro de accesos</div>
           <div class="page-sub">Historial completo de entradas y salidas</div>
         </div>
-        <button class="btn btn-primary" onclick="nuevoAcceso()">+ Registrar acceso</button>
+        <button class="btn btn-primary" onclick="nuevoAcceso()">Registrar acceso</button>
       </div>
       <div class="card">
         <div class="searchbar">
@@ -2051,10 +2169,10 @@
           <div class="page-sub">Casas, residentes y personas autorizadas a ingresar</div>
         </div>
         <div class="section-actions">
-          <button class="btn btn-primary" onclick="showModal('modal-lote')">+ Agregar propietario</button>
-          <button class="btn" onclick="showModal('modal-residente')">+ Agregar residente</button>
-          <button class="btn" onclick="nuevoVehiculo()">+ Agregar vehiculo</button>
-          <button class="btn" onclick="showModal('modal-autorizado')">+ Autorizar ingreso</button>
+          <button class="btn btn-primary" onclick="showModal('modal-lote')">Agregar propietario</button>
+          <button class="btn" onclick="showModal('modal-residente')">Agregar residente</button>
+          <button class="btn" onclick="nuevoVehiculo()">Agregar vehiculo</button>
+          <button class="btn" onclick="showModal('modal-autorizado')">Autorizar ingreso</button>
           <button class="btn" onclick="abrirImportarExcel()">Importar Excel</button>
         </div>
       </div>
@@ -2182,7 +2300,7 @@
           <div class="page-title">Residentes</div>
           <div class="page-sub">Miembros autorizados por lote</div>
         </div>
-        <button class="btn btn-primary" onclick="showModal('modal-residente')">+ Agregar residente</button>
+        <button class="btn btn-primary" onclick="showModal('modal-residente')">Agregar residente</button>
       </div>
       <div class="card">
         <div class="searchbar">
@@ -2214,7 +2332,7 @@
           <div class="page-title">Vehiculos autorizados</div>
           <div class="page-sub">Patentes registradas por lote</div>
         </div>
-        <button class="btn btn-primary" onclick="nuevoVehiculo()">+ Agregar vehiculo</button>
+        <button class="btn btn-primary" onclick="nuevoVehiculo()">Agregar vehiculo</button>
       </div>
       <div class="card">
         <div class="searchbar">
@@ -2243,10 +2361,10 @@
     <div id="page-obras" class="page">
       <div class="page-header">
         <div>
-          <div class="page-title">Obras y personal</div>
+          <div class="page-title">Obras y Personal</div>
           <div class="page-sub">Albañiles y contratistas habilitados</div>
         </div>
-        <button class="btn btn-primary" onclick="nuevoObraPersonal()">+ Agregar personal</button>
+        <button class="btn btn-primary" onclick="nuevoObraPersonal()">Agregar personal</button>
       </div>
       <div class="card">
         <div class="searchbar">
@@ -3036,14 +3154,18 @@ function selectLoginRole(role) {
   document.getElementById('login-user')?.focus();
 }
 
+function normalizarCredencialLogin(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
 function handleLogin(event) {
   event.preventDefault();
   const role = document.getElementById('login-role')?.value || 'seguridad';
   const config = LOGIN_ROLES[role] || LOGIN_ROLES.seguridad;
-  const user = document.getElementById('login-user').value.trim();
-  const pass = document.getElementById('login-pass').value;
+  const user = normalizarCredencialLogin(document.getElementById('login-user')?.value);
+  const pass = normalizarCredencialLogin(document.getElementById('login-pass')?.value);
   const error = document.getElementById('login-error');
-  if(user === config.user && pass === config.pass) {
+  if(user === normalizarCredencialLogin(config.user) && pass === normalizarCredencialLogin(config.pass)) {
     localStorage.setItem('gd_auth_role', role);
     if(role !== 'residentes') localStorage.setItem('gd_logged_in', '1');
     else localStorage.removeItem('gd_logged_in');
@@ -3803,9 +3925,17 @@ function renderPasesPropietario() {
     box.innerHTML = '<div class="empty">Todavía no hay pases temporales generados.</div>';
     return;
   }
-  box.innerHTML = pases.map(p => `
+  const hayEliminables = pases.some(p => pasePuedeEliminarse(p));
+  box.innerHTML = `${hayEliminables ? `
+    <div class="cleanup-toolbar">
+      <button class="btn btn-sm" type="button" onclick="seleccionarPasesEliminables('owner-pases-lista', true)">Seleccionar finalizados</button>
+      <button class="btn btn-sm" type="button" onclick="seleccionarPasesEliminables('owner-pases-lista', false)">Limpiar selección</button>
+      <button class="btn btn-sm btn-danger" type="button" onclick="eliminarPasesSeleccionados('owner-pases-lista')">Eliminar seleccionados</button>
+    </div>` : ''}${pases.map(p => {
+    const eliminable = pasePuedeEliminarse(p);
+    return `
     <div class="access-entry" style="align-items:flex-start">
-      <div class="access-dot ${p.estado === 'activo' ? 'entrada' : 'salida'}"></div>
+      ${eliminable ? `<label class="cleanup-check"><input type="checkbox" class="pass-delete-check" value="${p.id}"> Seleccionar</label>` : `<div class="access-dot ${p.estado === 'activo' ? 'entrada' : 'salida'}"></div>`}
       <div class="access-info">
         <div class="access-name">${escapeHtml(p.nombre)} <span class="badge ${p.estado === 'activo' ? 'badge-green' : 'badge-gray'}">${p.estado === 'activo' ? 'Activo' : 'Revocado'}</span></div>
         <div class="access-detail">DNI ${escapeHtml(p.dni)} | ${p.desde} a ${p.hasta} | ${p.horaDesde} a ${p.horaHasta}</div>
@@ -3816,10 +3946,11 @@ function renderPasesPropietario() {
           <button class="btn btn-sm" onclick="compartirQrPase('${p.id}')">Compartir QR</button>
           <button class="btn btn-sm" onclick="enviarWhatsappPase('${p.id}')">WhatsApp</button>
           ${p.estado === 'activo' ? `<button class="btn btn-sm btn-danger" onclick="revocarPase('${p.id}')">Revocar</button>` : ''}
+          ${eliminable ? `<button class="btn btn-sm btn-danger" onclick="eliminarPaseFinalizado('${p.id}')">Eliminar</button>` : ''}
         </div>
       </div>
     </div>
-  `).join('');
+  `}).join('')}`;
 }
 
 function copiarPase(id) {
@@ -3900,6 +4031,46 @@ function revocarPase(id) {
   if(document.getElementById('page-seguridad')?.classList.contains('active')) renderPasesGarita();
 }
 
+function pasePuedeEliminarse(pass) {
+  if(!pass) return false;
+  const today = fechaLocalISO();
+  return pass.estado !== 'activo' || (!!pass.hasta && today > pass.hasta);
+}
+
+function renderPasesViews() {
+  renderPasesPropietario();
+  if(document.getElementById('page-seguridad')?.classList.contains('active')) renderPasesGarita();
+}
+
+function eliminarPaseFinalizado(id) {
+  const pass = DB.get('pases').find(p => p.id === id);
+  if(!pasePuedeEliminarse(pass)) {
+    alert('Solo se pueden eliminar pases vencidos, revocados o finalizados.');
+    return;
+  }
+  if(!confirm('¿Eliminar este pase finalizado?')) return;
+  DB.set('pases', DB.get('pases').filter(p => p.id !== id));
+  renderPasesViews();
+}
+
+function seleccionarPasesEliminables(containerId, selected) {
+  const box = document.getElementById(containerId);
+  if(!box) return;
+  box.querySelectorAll('.pass-delete-check').forEach(input => input.checked = selected);
+}
+
+function eliminarPasesSeleccionados(containerId) {
+  const box = document.getElementById(containerId);
+  if(!box) return;
+  const ids = Array.from(box.querySelectorAll('.pass-delete-check:checked')).map(input => input.value);
+  if(!ids.length) { alert('Seleccione al menos un pase finalizado.'); return; }
+  const eliminables = new Set(DB.get('pases').filter(p => ids.includes(p.id) && pasePuedeEliminarse(p)).map(p => p.id));
+  if(!eliminables.size) { alert('No hay pases seleccionados que puedan eliminarse.'); return; }
+  if(!confirm(`¿Eliminar ${eliminables.size} pase${eliminables.size === 1 ? '' : 's'} finalizado${eliminables.size === 1 ? '' : 's'}?`)) return;
+  DB.set('pases', DB.get('pases').filter(p => !eliminables.has(p.id)));
+  renderPasesViews();
+}
+
 // ===================== DATA LAYER =====================
 const DB = {
   get: (k) => { try { return JSON.parse(localStorage.getItem('gd_'+k)) || []; } catch(e){ return []; } },
@@ -3949,7 +4120,8 @@ function applyTheme(theme) {
   const btn = document.getElementById('theme-toggle');
   if(btn) {
     const isLight = next === 'light';
-    btn.innerHTML = `<i class="ti ${isLight ? 'ti-sun' : 'ti-moon'}"></i>`;
+    btn.innerHTML = '<span class="theme-sun"><i class="ti ti-sun"></i></span><span class="theme-moon"><i class="ti ti-moon"></i></span>';
+    btn.dataset.activeTheme = next;
     btn.title = isLight ? 'Modo claro' : 'Modo oscuro';
     btn.setAttribute('aria-label', isLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro');
   }
@@ -5653,9 +5825,15 @@ function renderBuzonDestino(destino, containerId, limit = 20) {
     el.innerHTML = `<div class="empty">Sin mensajes para ${destinoNormalizado === 'garita' ? 'garita' : 'administración'}.</div>`;
     return;
   }
-  el.innerHTML = mensajes.map(m => `
+  const hayResueltos = mensajes.some(m => m.estado === 'resuelto');
+  el.innerHTML = `${hayResueltos ? `
+    <div class="cleanup-toolbar">
+      <button class="btn btn-sm" type="button" onclick="seleccionarMensajesResueltos('${containerId}', true)">Seleccionar resueltos</button>
+      <button class="btn btn-sm" type="button" onclick="seleccionarMensajesResueltos('${containerId}', false)">Limpiar selección</button>
+      <button class="btn btn-sm btn-danger" type="button" onclick="eliminarMensajesSeleccionados('${containerId}')">Eliminar seleccionados</button>
+    </div>` : ''}${mensajes.map(m => `
     <div class="access-entry" style="align-items:flex-start;margin-bottom:10px">
-      <div class="access-dot ${m.estado === 'resuelto' ? 'entrada' : 'obra'}"></div>
+      ${m.estado === 'resuelto' ? `<label class="cleanup-check"><input type="checkbox" class="buzon-delete-check" value="${m.id}"> Seleccionar</label>` : `<div class="access-dot obra"></div>`}
       <div class="access-info">
       <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
         <div>
@@ -5675,10 +5853,11 @@ function renderBuzonDestino(destino, containerId, limit = 20) {
         ${m.estado === 'resuelto'
           ? `<button class="btn btn-sm" onclick="cambiarEstadoMensaje('${m.id}','pendiente')">Marcar pendiente</button>`
           : `<button class="btn btn-sm btn-primary" onclick="cambiarEstadoMensaje('${m.id}','resuelto')">Marcar resuelto</button>`}
+        ${m.estado === 'resuelto' ? `<button class="btn btn-sm btn-danger" onclick="eliminarMensajeResuelto('${m.id}')">Eliminar</button>` : ''}
       </div>
       </div>
     </div>
-  `).join('');
+  `).join('')}`;
 }
 
 function renderBuzones() {
@@ -5718,6 +5897,40 @@ function responderMensaje(id) {
   renderBuzones();
 }
 
+function renderBuzonViews() {
+  renderMensajesPropietario();
+  renderBuzones();
+}
+
+function eliminarMensajeResuelto(id) {
+  const item = DB.get('buzon').find(m => m.id === id);
+  if(!item || item.estado !== 'resuelto') {
+    alert('Solo se pueden eliminar mensajes resueltos.');
+    return;
+  }
+  if(!confirm('¿Eliminar este mensaje resuelto?')) return;
+  DB.set('buzon', DB.get('buzon').filter(m => m.id !== id));
+  renderBuzonViews();
+}
+
+function seleccionarMensajesResueltos(containerId, selected) {
+  const box = document.getElementById(containerId);
+  if(!box) return;
+  box.querySelectorAll('.buzon-delete-check').forEach(input => input.checked = selected);
+}
+
+function eliminarMensajesSeleccionados(containerId) {
+  const box = document.getElementById(containerId);
+  if(!box) return;
+  const ids = Array.from(box.querySelectorAll('.buzon-delete-check:checked')).map(input => input.value);
+  if(!ids.length) { alert('Seleccione al menos un mensaje resuelto.'); return; }
+  const eliminables = new Set(DB.get('buzon').filter(m => ids.includes(m.id) && m.estado === 'resuelto').map(m => m.id));
+  if(!eliminables.size) { alert('No hay mensajes seleccionados que puedan eliminarse.'); return; }
+  if(!confirm(`¿Eliminar ${eliminables.size} mensaje${eliminables.size === 1 ? '' : 's'} resuelto${eliminables.size === 1 ? '' : 's'}?`)) return;
+  DB.set('buzon', DB.get('buzon').filter(m => !eliminables.has(m.id)));
+  renderBuzonViews();
+}
+
 let paseScanStream = null;
 let paseScanTimer = null;
 
@@ -5729,19 +5942,27 @@ function renderPasesGarita() {
     box.innerHTML = '<div class="empty">Sin pases temporales generados.</div>';
     return;
   }
-  box.innerHTML = pases.map(p => {
+  const hayEliminables = pases.some(p => pasePuedeEliminarse(p));
+  box.innerHTML = `${hayEliminables ? `
+    <div class="cleanup-toolbar">
+      <button class="btn btn-sm" type="button" onclick="seleccionarPasesEliminables('lista-pases-garita', true)">Seleccionar finalizados</button>
+      <button class="btn btn-sm" type="button" onclick="seleccionarPasesEliminables('lista-pases-garita', false)">Limpiar selección</button>
+      <button class="btn btn-sm btn-danger" type="button" onclick="eliminarPasesSeleccionados('lista-pases-garita')">Eliminar seleccionados</button>
+    </div>` : ''}${pases.map(p => {
     const estado = evaluarPase(p);
+    const eliminable = pasePuedeEliminarse(p);
     return `
       <div class="access-entry" style="align-items:flex-start">
-        <div class="access-dot ${estado.ok ? 'entrada' : 'salida'}"></div>
+        ${eliminable ? `<label class="cleanup-check"><input type="checkbox" class="pass-delete-check" value="${p.id}"> Seleccionar</label>` : `<div class="access-dot ${estado.ok ? 'entrada' : 'salida'}"></div>`}
         <div class="access-info">
           <div class="access-name">${escapeHtml(p.nombre)} <span class="badge ${estado.ok ? 'badge-green' : 'badge-red'}">${estado.ok ? 'Habilitado ahora' : 'No habilitado'}</span></div>
           <div class="access-detail">DNI ${escapeHtml(p.dni)} | ${escapeHtml(p.loteLabel || '')}</div>
           <div class="access-detail">${p.desde} a ${p.hasta} | ${p.horaDesde} a ${p.horaHasta} | ${diasPaseLabel(p.dias)}</div>
           <div class="access-detail">${escapeHtml(estado.motivo)}</div>
+          ${eliminable ? `<div style="margin-top:8px"><button class="btn btn-sm btn-danger" onclick="eliminarPaseFinalizado('${p.id}')">Eliminar</button></div>` : ''}
         </div>
       </div>`;
-  }).join('');
+  }).join('')}`;
 }
 
 function evaluarPase(pass, date = new Date()) {
